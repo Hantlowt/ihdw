@@ -1,0 +1,15 @@
+<html>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
+<h2>Admin of ${app.config.data.website_name}</h2>
+<span class="label error" if="app.error.length > 0">${app.error}</span>
+<span class="label success" if="app.info.length > 0">${app.info}</span>
+<p></p>
+<div if="app.account == null">
+Name: <input id="name"/>
+Password: <input id="password" type="password"/>
+<button onclick="ihf.sendForm('login', 'name', 'password');">Login</button>
+</div>
+<div if="app.account != null">
+    {%admin.html%}
+</div>
+</html>

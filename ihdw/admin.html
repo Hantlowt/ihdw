@@ -1,8 +1,36 @@
-<html>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
-<h2>Admin of ${app.website_name}</h2>
-<p></p>
-<input id="task"/>
-<span class="label error" if="app.error.length > 0">${app.error}</span>
+Connected as <b>${app.account.data.name}</b> <button onclick="ihf.send('logout');">Logout</button>
 
-</html>
+<div class="tabs four">
+    <input id='tab-1' type='radio' name='tabgroupB' checked />
+    <label class="pseudo button toggle" for="tab-1">Website pages</label>
+    <input id='tab-2' type='radio' name='tabgroupB'>
+    <label class="pseudo button toggle" for="tab-2">Templates</label>
+    <input id='tab-3' type='radio' name='tabgroupB'>
+    <label class="pseudo button toggle" for="tab-3">Config</label>
+    <input id='tab-4' type='radio' name='tabgroupB'>
+    <label class="pseudo button toggle" for="tab-4">Account</label>
+    <div class="row">
+      <div>
+        <h2>Website pages</h2>
+      </div>
+  
+      <div>
+        <h2>Templates</h2>
+      </div>
+  
+      <div>
+        <h2>Config</h2>
+        Website Name: <input id="website_name" value="${app.config.data.website_name}"/>
+        URL: <input id="website_url" value="${app.config.data.website_url}"/>
+        <button onclick="ihf.sendForm('update_config', 'website_name', 'website_url');">Update</button>
+
+      </div>
+
+      <div>
+        <h2>Account</h2>
+            Name: <input id="name" value="${app.account.data.name}"/>
+            Password: <input id="password" type="password"/>
+            <button onclick="ihf.sendForm('update_profile', 'name', 'password');">Update</button>
+      </div>
+    </div>
+</div>
