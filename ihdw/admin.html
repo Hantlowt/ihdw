@@ -4,18 +4,18 @@ Connected as <b>${app.account.data.name}</b> <button onclick="ihf.send('logout')
     <input id='tab-1' type='radio' name='tabgroupB' checked />
     <label class="pseudo button toggle" for="tab-1">Website pages</label>
     <input id='tab-2' type='radio' name='tabgroupB'>
-    <label class="pseudo button toggle" for="tab-2">Templates</label>
+    <label class="pseudo button toggle" for="tab-2">Content</label>
     <input id='tab-3' type='radio' name='tabgroupB'>
     <label class="pseudo button toggle" for="tab-3">Config</label>
     <input id='tab-4' type='radio' name='tabgroupB'>
     <label class="pseudo button toggle" for="tab-4">Account</label>
     <div class="row">
       <div>
-        <h2>Website pages</h2>
+        {%pages.html%}
       </div>
   
       <div>
-        <h2>Templates</h2>
+        {%content.html%}
       </div>
   
       <div>

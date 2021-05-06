@@ -1,0 +1,22 @@
+<h2>Website pages</h2>
+<button onclick="ihf.send('add_new_page')">Add new page category</button>
+<select id="page_category" onchange="ihf.sendForm('select_page', 'page_category');">
+    <option value="">--Please choose a page category--</option>
+    <option value="{{i}}" foreach="p,i in app.config.data.pages">{{p.category}}</option>
+</select>
+<p></p>
+<div if="app.selected_page != null">
+Content as Category:
+<select id="category">
+    <option {{c == app.selected_page.category ? 'selected="selected"' : ''}} value="{{c}}" foreach="c in app.all_categories">{{c}}</option>
+</select>
+<p></p>
+Template:
+<select id="template">
+    <option {{t == app.selected_page.template ? 'selected="selected"' : ''}} value="{{t}}" foreach="t in app.builder.templates">{{t}}</option>
+</select>
+<p></p>
+URL model: <input id="url" value="{{app.selected_page.url}}" />
+<button onclick="ihf.sendForm('update_page', 'category', 'url', 'template')">Save</button>
+<button onclick="ihf.send('delete_page')">Delete</button>
+</div>

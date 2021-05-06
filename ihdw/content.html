@@ -1,0 +1,45 @@
+<h2>Content</h2>
+<input id="category_new_node" value="category"> <button onclick="ihf.sendForm('add_node', 'category_new_node')">Add new node</button>
+<hr>
+<p></p>
+<select id="node_category" onchange="ihf.sendForm('search', 'node_category', 'condition')">
+    <option value="">--Please choose a node category--</option>
+    <option value="{{p}}" foreach="p,i in app.all_categories">{{p}}</option>
+</select>
+Condition: <input id="condition" type="text">
+<button onclick="ihf.sendForm('search', 'node_category', 'condition')">Search</button>
+<hr>
+<p></p>
+<ul>
+    <li foreach="node in app.search_result"> <a href="#" onclick="ihf.send('select_node', '{{node.id}}', '{{node.category}}')">{{node.preview_name}}</a> 
+    <ul>
+        <li>{{node.preview_data}}</li>
+    </ul>
+    </li>
+</ul>
+<p></p>
+<p></p>
+<div if="app.selected_node != null">
+<h2>ID: {{app.selected_node.id}}</h2>
+<button onclick="var r = confirm('Do you really want to delete this node?');  if (r) {ihf.send('delete_node')}">Delete</button>
+
+<h4>Data:</h4>
+<div foreach="d in Object.keys(app.selected_node.data)">
+<span>{{d}}</span>: <textarea id="input_data_{{d}}" >{{app.selected_node.data[d]}}</textarea> <button onclick="ihf.send('delete_data', '{{d}}')">x</button>
+<hr>
+</div>
+<button onclick="var dict = {}; $('textarea[id^=input]').map(function(x,y) { dict[y.id.replace('input_data_', '')] = y.value }); ihf.send('update_data', dict)">Save</button>
+<p></p>
+Add new data: <input id="new_data_name" value="name">
+<input id="new_data_value" value="value">
+<button onclick="ihf.sendForm('add_data', 'new_data_name', 'new_data_value')">Add</button>
+<p></p>
+<h4>Relations:</h4>
+<div foreach="d in Object.keys(app.selected_node.relations)">
+{{d}}: <a href="#" onclick="var s = '{{app.selected_node.relations[d]}}'.split(':'); ihf.send('select_node', s[1], s[0])">{{app.selected_node.relations[d]}}</a> <button onclick="ihf.send('delete_relation', '{{d}}')">x</button>
+<hr>
+</div>
+Add new relation: <input id="new_relation_name" value="name">
+<input id="new_relation_value" value="category:id">
+<button onclick="ihf.sendForm('add_relation', 'new_relation_name', 'new_relation_value')">Add</button>
+</div>
