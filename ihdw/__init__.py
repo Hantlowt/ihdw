@@ -4,7 +4,7 @@ from hashlib import sha512
 from uuid import uuid4
 import time
 import os
-from builder import Builder
+from ihdw.builder import Builder
 
 def create_global_config():
     g = db.create_node('Global_Config')
