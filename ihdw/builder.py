@@ -28,7 +28,7 @@ class Builder:
             shutil.rmtree('www/result', ignore_errors=True)
         os.mkdir('www/result')
         if os.path.exists('templates/static'):
-            shutil.copytree(os.path.dirname('templates/static', 'www/result/static'))
+            shutil.copytree('templates/static', 'www/result/static')
         for config in self.global_config['pages']:
             for page in self.db.nodes(config['category']):
                 self.generate_file(page, config)
