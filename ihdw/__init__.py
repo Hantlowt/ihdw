@@ -39,10 +39,9 @@ class Admin:
         self.selected_node = None
         self.search_result = []
         self.gen_all_categories()
-        self.login('root', 'root')
 
     def login(self, name, password):
-        #time.sleep(3) #Simple protection against brute-force attack
+        time.sleep(3) #Simple protection against brute-force attack
         password_hash = hash_password(password)
         try:
             self.account = [a for a in db.nodes('Account') if a['name'] == name and a['__password__'] == password_hash][0]
@@ -172,7 +171,7 @@ if global_config is None:
     p['author'] = a
 
 def serve(host='localhost', port=1910):
-    Ihf(Admin, os.path.dirname(os.path.realpath(__file__))+'/index.html', host=host, port=port, loading_indicator=False).serve()
+    Ihf(Admin, os.path.dirname(os.path.realpath(__file__))+'/index.html', host=host, port=port, loading_indicator=True).serve()
 
 if __name__ == "__main__":
     serve()
