@@ -1,5 +1,5 @@
 Connected as <b>${app.account.data.name}</b> <button onclick="ihf.send('logout');">Logout</button>
-
+<button onclick="ihf.send('build');">Build website</button>
 <div class="tabs four">
     <input id='tab-1' type='radio' name='tabgroupB' checked />
     <label class="pseudo button toggle" for="tab-1">Website pages</label>
@@ -31,6 +31,14 @@ Connected as <b>${app.account.data.name}</b> <button onclick="ihf.send('logout')
             Name: <input id="name" value="${app.account.data.name}"/>
             Password: <input id="password" type="password"/>
             <button onclick="ihf.sendForm('update_profile', 'name', 'password');">Update</button>
+            <p></p>
+            <p></p>
+            <div if="app.account.data.isSuperAdmin == true">
+              <h3>New account</h3>
+              Name: <input id="new_name"/>
+              Password: <input id="new_password" type="password"/>
+              <button onclick="ihf.sendForm('register', 'new_name', 'new_password');">Add</button>
+            </div>
       </div>
     </div>
 </div>

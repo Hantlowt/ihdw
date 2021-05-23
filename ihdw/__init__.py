@@ -61,6 +61,14 @@ class Admin:
         account['name'] = name
         account['__password__'] = hash_password(password)
         account['isSuperAdmin'] = False
+        self.info = f'{name} added successfully'
+    
+    def build(self):
+        try:
+            self.builder.generate_website()
+            self.info = "Successfully built"
+        except Exception as e:
+            self.error = str(e)
     
     def update_profile(self, name, password=''):
         if len(name) > 0:
@@ -91,7 +99,6 @@ class Admin:
         if template in self.builder.templates:
             self.selected_page['template'] = template
         self.config.save()
-        self.builder.generate_website()
     
     def gen_all_categories(self):
         self.all_categories = db.get_all_categories()
