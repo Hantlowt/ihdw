@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="ihdw",
-    version="0.2.0",
+    version="0.2.1",
     description="ihdw",
     long_description="i hate dynamic website",
     url="https://github.com/Hantlowt/ihdw",

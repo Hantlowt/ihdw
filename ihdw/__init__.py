@@ -13,7 +13,7 @@ def create_global_config():
     g['__key__'] = uuid4().hex
     g['website_name'] = 'Your WebSite'
     g['website_url'] = 'https://your-website.com'
-    g['pages'] = [{'category': 'Post', 'url': 'post/{{url.lower()}}', 'template':''}]
+    g['pages'] = [{'category': 'Post', 'url': 'post/{{title.lower()}}', 'template':''}]
     g['deployment_script'] = ''
     return g
 
@@ -80,10 +80,13 @@ class Admin:
     
     def delete_page(self):
         self.config['pages'].remove(self.selected_page)
+        self.config.save()
         self.selected_page = None
+
 
     def add_new_page(self):
         self.config['pages'] += [{'category': '', 'url': 'post/{url}', 'template':''}]
+        self.config.save()
 
     def select_page(self, index):
         self.builder.load_templates()
