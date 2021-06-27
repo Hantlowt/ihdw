@@ -10,7 +10,7 @@
 		message = api.updateProfile(new_name, new_password)
 	}
 </script>
-
+<section>
 <aside>
 {#if informations}
 	{#await informations}
@@ -33,3 +33,4 @@
 	{/await}
 {/if}
 </aside>
+</section>

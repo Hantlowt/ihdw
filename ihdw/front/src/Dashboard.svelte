@@ -6,10 +6,12 @@
 	import Profile from './Profile.svelte'
 	import Config from './Config.svelte'
 	import Pages from './Pages.svelte'
+	import Content from './Content.svelte'
 
 	
 	let pages = [
 	{'name': 'Pages', 'component': Pages},
+	{'name': 'Content', 'component': Content},
 	{'name': 'Profile', 'component': Profile},
 	{'name': 'Config', 'component': Config}];
 
@@ -43,7 +45,5 @@
 </header>
 
 <main>
-	<section>
 		<svelte:component api={api} this={selectedPage.component}/>
-	</section>
 </main>

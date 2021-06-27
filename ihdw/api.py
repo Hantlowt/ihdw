@@ -110,6 +110,45 @@ def updateProfile(name, password, user: hug.directives.user):
 def getPages():
     return global_config['pages']
 
+def getPage(category):
+    page = [p for p in global_config['pages'] if p['category'] == category]
+    if len(page) > 0:
+        return page[0]
+    return None
+
+@hug.get(requires=token_key_authentication)
+def getPageConfig(category):
+    page = getPage(category)
+    if page is not None:
+        return page
+    return error("Can't find pages with category "+category)
+
+@hug.post(requires=token_key_authentication)
+def addOrUpdatePage(category, url, template):
+    if category in getCategories():
+        if len(url) == 0:
+            return error('Url cannot be null')
+        if len(template) == 0:
+            return error ('Template cannot be null')
+        page = {}
+        page['category'] = category
+        page['url'] = url
+        page['template'] = template
+        deletePage(category)
+        global_config['pages'] += [page]
+        global_config.save()
+        return 'Saved.'
+            
+
+@hug.post(requires=token_key_authentication)
+def deletePage(category):
+    page = getPage(category)
+    if page is not None:
+        global_config['pages'].remove(page)
+        global_config.save()
+    return "Ok."
+
+
 @hug.get(requires=token_key_authentication)
 def getCategories():
     cat = db.get_all_categories()
@@ -133,15 +172,6 @@ def getAvailableCategories():
 def getUsedCategories():
     return [page['category'] for page in global_config['pages']]
 
-def delete_page(self):
-    self.config['pages'].remove(self.selected_page)
-    self.config.save()
-    self.selected_page = None
-
-
-def add_new_page(self):
-    self.config['pages'] += [{'category': '', 'url': 'post/{url}', 'template':''}]
-    self.config.save()
 
 def select_page(self, index):
     self.builder.load_templates()

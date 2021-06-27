@@ -10,7 +10,7 @@
 		message = api.updateConfig(new_name, new_url)
 	}
 </script>
-
+<section>
 <aside>
 {#if informations}
 	{#await informations}
@@ -33,3 +33,4 @@
 	{/await}
 {/if}
 </aside>
+</section>
