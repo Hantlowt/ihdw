@@ -6,7 +6,7 @@ from hashlib import sha512
 from uuid import uuid4
 import time
 import os
-from ihdw.builder import Builder
+#from ihdw.builder import Builder
 import jwt
 from hug.middleware import CORSMiddleware
 import secrets
@@ -203,11 +203,12 @@ def updateConfig(name, url):
     if len(url) > 0:
         global_config['website_url'] = url
     return 'Config updated.'
-    
-def search(self, category, condition):
+
+@hug.post(requires=token_key_authentication)    
+def searchContent(category, condition):
     condition = None if len(condition) == 0 else condition
     nodes = db.nodes(category, where=condition)
-    self.search_result = []
+    search_result = []
     for n in nodes:
         d = {}
         d['id'] = n.id
@@ -217,10 +218,13 @@ def search(self, category, condition):
         d['preview_data'].pop('title', None)
         d['preview_data'].pop('name', None)
         d['preview_data'] = str(d['preview_data']).strip()[0:50]
-        self.search_result += [d]
-    
-def select_node(self, id, category):
-    self.selected_node = db.node(id, category)
+        search_result += [d]
+    return search_result
+
+@hug.get(requires=token_key_authentication)    
+def getContent(id, category):
+    n = db.node(id, category)
+    return n.data
     
 def add_node(self, category):
     self.selected_node = db.create_node(category)
@@ -318,12 +322,11 @@ def debug(response):
     return '<script src="/api.js"></script>'
 
 
-
 db = Ihdb('db')
 global_config = db.node('Global_Config', 'Global_Config')
 if global_config is None:
     global_config = create_global_config()
     register_superadmin()
-    a = db.create_node('Author', {'name': 'Toto', 'description': 'Is a studpi writer'})
-    p = db.create_node('Post', {'title': 'Test', 'content':'test'})
+    a = db.create_node('Author', {'name': {'type': 'text', 'content': 'TotoPouet'}, 'description': {'type': 'text', 'content': 'Is a stupid writer.'}})
+    p = db.create_node('Post', {'title': {'type': 'text', 'content': 'Test'}, 'content':{'type': 'text', 'content': 'Test'}})
     p['author'] = a

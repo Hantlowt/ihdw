@@ -6,12 +6,12 @@
 	import Profile from './Profile.svelte'
 	import Config from './Config.svelte'
 	import Pages from './Pages.svelte'
-	import Content from './Content.svelte'
+	import Contents from './Contents.svelte'
 
 	
 	let pages = [
 	{'name': 'Pages', 'component': Pages},
-	{'name': 'Content', 'component': Content},
+	{'name': 'Contents', 'component': Contents},
 	{'name': 'Profile', 'component': Profile},
 	{'name': 'Config', 'component': Config}];
 
