@@ -213,8 +213,9 @@ def searchContent(category, condition):
         d = {}
         d['id'] = n.id
         d['category'] = n.category
-        d['preview_name'] = f"{n['title'] or n['name']}" if (n['title'] or n['name']) != [] else n.id
-        d['preview_data'] = n.data.copy()
+        d['preview_name'] = n['title'] or n['name'] if (n['title'] or n['name']) != [] else n.id
+        d['preview_name'] = d['preview_name']['content'] if 'content' in d['preview_name'] else d['preview_name']
+        d['preview_data'] = {i: n.data[i]['content'] for i in n.data.keys()}
         d['preview_data'].pop('title', None)
         d['preview_data'].pop('name', None)
         d['preview_data'] = str(d['preview_data']).strip()[0:50]
@@ -225,7 +226,14 @@ def searchContent(category, condition):
 def getContent(id, category):
     n = db.node(id, category)
     return n.data
-    
+
+
+@hug.get(requires=token_key_authentication)    
+def getRelations(id, category):
+    n = db.node(id, category)
+    print(n.relations)
+    return [{r: {n.relations[r][0].split(':')[0]: n.relations[r][0].split(':')[1]} } for r in n.relations.keys()]
+
 def add_node(self, category):
     self.selected_node = db.create_node(category)
     if category in self.all_categories:
@@ -327,6 +335,6 @@ global_config = db.node('Global_Config', 'Global_Config')
 if global_config is None:
     global_config = create_global_config()
     register_superadmin()
-    a = db.create_node('Author', {'name': {'type': 'text', 'content': 'TotoPouet'}, 'description': {'type': 'text', 'content': 'Is a stupid writer.'}})
-    p = db.create_node('Post', {'title': {'type': 'text', 'content': 'Test'}, 'content':{'type': 'text', 'content': 'Test'}})
+    a = db.create_node('Author', {'name': {'type': 'text', 'content': 'TotoPouet'}, 'date': {'type': 'date', 'content': '2020-10-19'}, 'description': {'type': 'text', 'content': 'Is a stupid writer.'}})
+    p = db.create_node('Post', {'name': {'type': 'text', 'content': 'Test'}, 'date': {'type': 'date', 'content': '2020-10-19'}, 'content':{'type': 'markdown', 'content': 'Test **lol**'}})
     p['author'] = a

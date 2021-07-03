@@ -33,7 +33,9 @@ async function searchByCategory() {
 }
 
 async function openContent(content) {
-    contents.push(content)
+    if (!contents.some(e => e.id == content.id))
+        contents.push(content);
+        contents = contents;
 }
 
 </script>

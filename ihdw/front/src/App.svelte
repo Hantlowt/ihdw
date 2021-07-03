@@ -11,10 +11,14 @@
 	async function init() {
 		isLoggedPromise = api.token_authenticated()
 	}
+
+	
 </script>
 
 <svelte:head><link rel="stylesheet" href="https://unpkg.com/mvp.css">
 <script src="http://localhost:8000/api.js" on:load={initAPI}></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 </svelte:head>
 
 
