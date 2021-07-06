@@ -14,6 +14,7 @@ $: categoriesP = api ? api.getCategories() : null;
 async function add_content() {
     var id = await api.add_content(cat_selected);
     openContent({'id': id, 'category': cat_selected})
+    cat_selected = ''
 }
 
 async function setSearchIndex(i) {

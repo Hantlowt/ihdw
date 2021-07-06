@@ -10,6 +10,7 @@ import os
 import jwt
 from hug.middleware import CORSMiddleware
 import secrets
+from datetime import datetime
 
 api = hug.API(__name__)
 api.http.add_middleware(CORSMiddleware(api))
@@ -216,6 +217,9 @@ def add_content(category):
         for key in n.data.keys():
             n.data[key]['content'] = ''
             n.relations = f.relations.copy()
+    else:
+        n['name'] = {'type': 'text', 'content': ''}
+        n['date'] = {'type': 'date', 'content': datetime.today().strftime('%Y-%m-%d')}
     n.save()
     return n.id
 
@@ -255,10 +259,12 @@ def delete_relation(id, category, name):
 
 @hug.post(requires=token_key_authentication)
 def delete_data(id, category, name):
-    n = db.node(id, category)
-    n.data.pop(name)
-    n.save()
-    return 'OK.'
+    if name not in ['name', 'date']:
+        n = db.node(id, category)
+        n.data.pop(name)
+        n.save()
+        return 'OK.'
+    return error("Can't delete "+name)
     
 def update_data(self, data):
     self.selected_node.data = data

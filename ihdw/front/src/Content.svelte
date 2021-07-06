@@ -69,8 +69,11 @@
     }
 
     async function delete_content() {
-        api.delete_content(id, category);
-        dispatch('close');
+        var r = confirm("Do you really want to delete definitly this content ?");
+        if (r) {
+            api.delete_content(id, category);
+            dispatch('close');
+        }
     }
 
     $: loadData()
@@ -98,7 +101,9 @@
         {#if data[key].type == 'date'}
             <input on:change={(e) => update_data(key, 'date', e.target.value)} type='date' bind:value={data[key].content}>
         {/if}
-        <a href="#" on:click="{() => delete_data(key)}">Delete</a>
+        {#if (!['name', 'date'].includes(key))}
+            <a href="#" on:click="{() => delete_data(key)}">Delete</a>
+        {/if}
     </details>
     {/each}
     {#each Object.keys(relations) as key}
