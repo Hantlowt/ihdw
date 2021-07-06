@@ -172,26 +172,6 @@ def getAvailableCategories():
 def getUsedCategories():
     return [page['category'] for page in global_config['pages']]
 
-
-def select_page(self, index):
-    self.builder.load_templates()
-    self.gen_all_categories()
-    self.selected_page = self.config['pages'][int(index)]
-    
-def update_page(self, category, url, template):
-    if category in db.get_all_categories():
-        self.selected_page['category'] = category
-    if len(url) > 0:
-        self.selected_page['url'] = url
-    if template in self.builder.templates:
-        self.selected_page['template'] = template
-    self.config.save()
-    
-def gen_all_categories(self):
-    self.all_categories = db.get_all_categories()
-    self.all_categories.remove('Global_Config')
-    self.all_categories.remove('Account')
-
 @hug.get(requires=token_key_authentication)
 def getConfig():
     return {'name': global_config['website_name'], 'url': global_config['website_url']}
@@ -231,8 +211,37 @@ def getContent(id, category):
 @hug.get(requires=token_key_authentication)    
 def getRelations(id, category):
     n = db.node(id, category)
-    print(n.relations)
-    return [{r: {n.relations[r][0].split(':')[0]: n.relations[r][0].split(':')[1]} } for r in n.relations.keys()]
+    result = {}
+    for r in n.relations.keys():
+        result[r] = [n.relations[r][0].split(':')[0], n.relations[r][0].split(':')[1]]
+    return result
+
+@hug.post(requires=token_key_authentication)
+def add_data(id, category, name, type, value):
+    n = db.node(id, category)
+    n[name] = {'type': type, 'content': value}
+    return 'OK.'
+
+@hug.post(requires=token_key_authentication)
+def add_relation(id, category, name, rel_category):
+    rel = db.nodes(rel_category)[0]
+    n = db.node(id, category)
+    n[name] = rel
+    return 'OK.'
+
+@hug.post(requires=token_key_authentication)
+def delete_relation(id, category, name):
+    n = db.node(id, category)
+    n.delete_relation(name)
+    n.save()
+    return 'OK.'
+
+@hug.post(requires=token_key_authentication)
+def delete_data(id, category, name):
+    n = db.node(id, category)
+    n.data.pop(name)
+    n.save()
+    return 'OK.'
 
 def add_node(self, category):
     self.selected_node = db.create_node(category)
@@ -248,25 +257,6 @@ def update_data(self, data):
     self.selected_node.data = data
     self.selected_node.save()
     self.info = "Saved."
-    
-def add_data(self, name, value):
-    self.selected_node[name] = value
-    
-def delete_data(self, name):
-    self.selected_node.data.pop(name)
-    self.selected_node.save()
-    
-def add_relation(self, name, rel):
-    category, id = rel.split(':')
-    node = db.node(id, category)
-    if node != None:
-        self.selected_node[name] = node
-    else:
-        self.error = "No node found with this id"
-    
-def delete_relation(self, name):
-    self.selected_node.delete_relation(name)
-    self.selected_node.save()
 
 
 def generate_function(url, method='GET', parameters=(), requires=()):
@@ -336,5 +326,6 @@ if global_config is None:
     global_config = create_global_config()
     register_superadmin()
     a = db.create_node('Author', {'name': {'type': 'text', 'content': 'TotoPouet'}, 'date': {'type': 'date', 'content': '2020-10-19'}, 'description': {'type': 'text', 'content': 'Is a stupid writer.'}})
+    b = db.create_node('Author', {'name': {'type': 'text', 'content': 'anotherauthor'}, 'date': {'type': 'date', 'content': '2020-10-19'}, 'description': {'type': 'text', 'content': 'Is a anoymous.'}})
     p = db.create_node('Post', {'name': {'type': 'text', 'content': 'Test'}, 'date': {'type': 'date', 'content': '2020-10-19'}, 'content':{'type': 'markdown', 'content': 'Test **lol**'}})
-    p['author'] = a
+    p['author'] = b
