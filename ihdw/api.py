@@ -202,6 +202,23 @@ def searchContent(category, condition):
         search_result += [d]
     return search_result
 
+@hug.post(requires=token_key_authentication) 
+def delete_content(id, category):
+    db.delete(db.node(id, category))
+    return 'Ok.'
+
+@hug.post(requires=token_key_authentication) 
+def add_content(category):
+    n = db.create_node(category)
+    if category in getCategories():
+        f = db.nodes(category)[0]
+        n.data = f.data.copy()
+        for key in n.data.keys():
+            n.data[key]['content'] = ''
+            n.relations = f.relations.copy()
+    n.save()
+    return n.id
+
 @hug.get(requires=token_key_authentication)    
 def getContent(id, category):
     n = db.node(id, category)
@@ -242,16 +259,6 @@ def delete_data(id, category, name):
     n.data.pop(name)
     n.save()
     return 'OK.'
-
-def add_node(self, category):
-    self.selected_node = db.create_node(category)
-    if category in self.all_categories:
-        self.selected_node.data = {k: '' for k in db.nodes(category)[0].data.keys()}
-    self.selected_node.save()
-    
-def delete_node(self):
-    db.delete(self.selected_node)
-    self.selected_node = None
     
 def update_data(self, data):
     self.selected_node.data = data

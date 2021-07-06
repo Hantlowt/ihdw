@@ -1,5 +1,9 @@
 <script>
     import Loading from  './Loading.svelte'
+    import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
     export let api;
     export let category;
     export let id;
@@ -20,7 +24,6 @@
             for (const key in relations) {
                 if (!Object.keys(searchResults).includes(relations[key][0]))
                     searchResults[relations[key][0]] = await api.searchContent(relations[key][0], '')
-                console.log(searchResults)
             }
         }
     }
@@ -29,7 +32,10 @@
         mdeData[el.id] = new window.SimpleMDE({element: el})
         mdeData[el.id].value(data[el.id].content)
         mdeData[el.id].codemirror.on("change", function(){
-            update_data(el.id, 'markdown', mdeData[el.id].value());
+            clearTimeout(mdeData[el.id].timeout);
+            mdeData[el.id].timeout = setTimeout(function() {   
+                update_data(el.id, 'markdown', mdeData[el.id].value());
+            }, 1000);
         });
     }
 
@@ -60,6 +66,11 @@
 
     async function update_data(name, type, value) {
         api.add_data(id, category, name, type, value)
+    }
+
+    async function delete_content() {
+        api.delete_content(id, category);
+        dispatch('close');
     }
 
     $: loadData()
@@ -128,7 +139,7 @@
     {/if}
     <button on:click="{() => {if(new_content_type != 'relation') {add_data()} else {add_relation()} }}">Add</button>
     <hr>
-    <a href="#">Delete (/!\)</a>
+    <a href="#" on:click={delete_content}>Delete (/!\)</a>
 {:else}
 <Loading enabled=true />
 {/if}

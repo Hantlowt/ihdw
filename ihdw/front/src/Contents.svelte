@@ -11,6 +11,11 @@ let searchIndex = 0;
 let searchPageMax = 0;
 $: categoriesP = api ? api.getCategories() : null;
 
+async function add_content() {
+    var id = await api.add_content(cat_selected);
+    openContent({'id': id, 'category': cat_selected})
+}
+
 async function setSearchIndex(i) {
 	if (i+1 >= 1 && i+1 <= searchPageMax)
 		searchIndex = i;
@@ -49,6 +54,7 @@ async function openContent(content) {
 		Loading...
         {:then categories}
         <select bind:value={cat_selected}>
+            <option value=""></option>
             {#each categories as cat}
             <option value={cat}>
                 {cat}
@@ -63,7 +69,7 @@ async function openContent(content) {
         {#if choose_mode == 0}<a on:click={()=>choose_mode=1} href="#">Choose existant category</a> / <a on:click={()=>{choose_mode=2; cat_selected=''}} href="#">Add a new one</a>
         {:else}
         <a on:click={()=>choose_mode=0} href="#">Cancel</a>
-        <button>Add</button>
+        <button on:click={add_content}>Add</button>
         {/if}
     </aside>
     <aside>
@@ -94,6 +100,6 @@ async function openContent(content) {
 <hr>
 <section>
 {#each contents as content}
-     <Content api={api} id={content.id} category={content.category} />
+     <Content on:close={() => {contents = contents.filter(c => c.id != content.id)}} api={api} id={content.id} category={content.category} />
 {/each}
 </section>
