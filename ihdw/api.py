@@ -217,8 +217,7 @@ def add_content(category):
         for key in n.data.keys():
             n.data[key]['content'] = ''
             n.relations = f.relations.copy()
-    else:
-        n['name'] = {'type': 'text', 'content': ''}
+        n['name'] = {'type': 'text', 'content': 'New Content'}
         n['date'] = {'type': 'date', 'content': datetime.today().strftime('%Y-%m-%d')}
     n.save()
     return n.id
@@ -248,6 +247,14 @@ def add_relation(id, category, name, rel_category):
     rel = db.nodes(rel_category)[0]
     n = db.node(id, category)
     n[name] = rel
+    return 'OK.'
+
+@hug.post(requires=token_key_authentication)
+def update_relation(id, category, name, rel_category, rel_id):
+    rel = db.node(rel_id, rel_category)
+    if rel is not None:
+        n = db.node(id, category)
+        n[name] = rel
     return 'OK.'
 
 @hug.post(requires=token_key_authentication)

@@ -68,6 +68,10 @@
         api.add_data(id, category, name, type, value)
     }
 
+    async function update_relation(name, rel_category, rel_id) {
+        api.update_relation(id, category, name, rel_category, rel_id)
+    }
+
     async function delete_content() {
         var r = confirm("Do you really want to delete definitly this content ?");
         if (r) {
@@ -86,6 +90,7 @@
 
 <aside class="content">
 {#if data && relations && searchResults}
+<nav><h3>{data['name'].content} </h3> <a href="#" on:click={() => dispatch('close')}> x</a></nav>
     {#each Object.keys(data) as key}
     <details>
         <summary>{key}</summary>
@@ -109,7 +114,7 @@
     {#each Object.keys(relations) as key}
     <details>
         <summary>{key}</summary>
-        <select bind:value={relations[key][1]}>
+        <select on:blur={(e) => update_relation(key, e.target.value)} bind:value={relations[key][1]}>
             {#if searchResults[relations[key][0]]}
             {#each searchResults[relations[key][0]] as search}
             <option value={search.id}>
@@ -159,5 +164,8 @@ hr {
 }
 button {
     padding: 0.5rem;
+}
+nav {
+    margin-bottom: 0rem;
 }
 </style>
