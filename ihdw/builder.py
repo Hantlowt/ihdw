@@ -2,6 +2,7 @@ import os
 from singleton_decorator import singleton
 from jinja2 import Template
 import shutil
+from markdown import markdown
 
 @singleton
 class Builder:
@@ -14,7 +15,7 @@ class Builder:
     def load_templates(self):
         self.templates = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser("templates")) for f in fn]
     def data_to_content(self, data):
-        return {d: data[d]['content'] for d in data.keys()}
+        return {d: markdown(data[d]['content']) if data[d]['type'] == 'markdown' else data[d]['content'] for d in data.keys()}
     def generate_file(self, page, config):
         url = Template(config['url']).render(**self.data_to_content(page.data))
         with open('templates/'+config['template']) as f:

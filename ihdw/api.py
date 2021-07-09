@@ -218,8 +218,8 @@ def add_content(category):
         for key in n.data.keys():
             n.data[key]['content'] = ''
             n.relations = f.relations.copy()
-        n['name'] = {'type': 'text', 'content': 'New Content'}
-        n['date'] = {'type': 'date', 'content': datetime.today().strftime('%Y-%m-%d')}
+    n['name'] = {'type': 'text', 'content': 'New Content'}
+    n['date'] = {'type': 'date', 'content': datetime.today().strftime('%Y-%m-%d')}
     n.save()
     return n.id
 
