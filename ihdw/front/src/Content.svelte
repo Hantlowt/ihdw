@@ -114,15 +114,16 @@
     {#each Object.keys(relations) as key}
     <details>
         <summary>{key}</summary>
-        <select on:blur={(e) => update_relation(key, e.target.value)} bind:value={relations[key][1]}>
-            {#if searchResults[relations[key][0]]}
+        {#if searchResults[relations[key][0]]}
+        <select on:blur={(e) => update_relation(key, relations[key][0], e.target.value)} bind:value={relations[key][1]}>
+            
             {#each searchResults[relations[key][0]] as search}
             <option value={search.id}>
                 {search.preview_name} - {search.preview_data}
             </option>
             {/each}
-            {/if}
         </select>
+        {/if}
         <a href="#" on:click="{() => delete_relation(key)}">Delete</a>
     </details>
     {/each}

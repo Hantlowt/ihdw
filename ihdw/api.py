@@ -6,7 +6,7 @@ from hashlib import sha512
 from uuid import uuid4
 import time
 import os
-#from ihdw.builder import Builder
+from builder import Builder
 import jwt
 from hug.middleware import CORSMiddleware
 import secrets
@@ -83,13 +83,14 @@ def register(name, password):
     account['isSuperAdmin'] = False
     return f'{name} added successfully'
 
-@hug.get()    
+@hug.get()
 def build():
+    builder.generate_website()
     try:
-        self.builder.generate_website()
-        self.info = "Successfully built"
+        builder.generate_website()
+        return "Successfully built"
     except Exception as e:
-        self.error = str(e)
+        return error(str(e))
 
 @hug.get(requires=token_key_authentication)
 def getProfileInformations(user: hug.directives.user):
@@ -272,11 +273,6 @@ def delete_data(id, category, name):
         n.save()
         return 'OK.'
     return error("Can't delete "+name)
-    
-def update_data(self, data):
-    self.selected_node.data = data
-    self.selected_node.save()
-    self.info = "Saved."
 
 
 def generate_function(url, method='GET', parameters=(), requires=()):
@@ -339,9 +335,9 @@ class Api {
 def debug(response):
     return '<script src="/api.js"></script>'
 
-
 db = Ihdb('db')
 global_config = db.node('Global_Config', 'Global_Config')
+builder = Builder(db, global_config)
 if global_config is None:
     global_config = create_global_config()
     register_superadmin()

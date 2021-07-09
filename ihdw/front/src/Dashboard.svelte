@@ -3,6 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import Loading from  './Loading.svelte'
+	import Home from './Home.svelte'
 	import Profile from './Profile.svelte'
 	import Config from './Config.svelte'
 	import Pages from './Pages.svelte'
@@ -10,6 +11,7 @@
 
 	
 	let pages = [
+	{'name': 'Home', 'component': Home},
 	{'name': 'Pages', 'component': Pages},
 	{'name': 'Contents', 'component': Contents},
 	{'name': 'Profile', 'component': Profile},
