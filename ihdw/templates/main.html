@@ -1,1 +1,4 @@
-Coucou {{name}}
+Coucou ${current['name']['value']}
+% for post in db.nodes('Post'):
+    <li>Item ${loop.index}: ${post['name']['value']} - ${getURL(post)}</li>
+% endfor

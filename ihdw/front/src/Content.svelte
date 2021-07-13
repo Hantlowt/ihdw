@@ -30,7 +30,7 @@
 
     const setMDE = el => {
         mdeData[el.id] = new window.SimpleMDE({element: el})
-        mdeData[el.id].value(data[el.id].content)
+        mdeData[el.id].value(data[el.id].value)
         mdeData[el.id].codemirror.on("change", function(){
             clearTimeout(mdeData[el.id].timeout);
             mdeData[el.id].timeout = setTimeout(function() {   
@@ -90,7 +90,7 @@
 
 <aside class="content">
 {#if data && relations && searchResults}
-<nav><h3>{data['name'].content} </h3> <a href="#" on:click={() => dispatch('close')}> x</a></nav>
+<nav><h3>{data['name'].value} </h3> <a href="#" on:click={() => dispatch('close')}> x</a></nav>
     {#each Object.keys(data) as key}
     <details>
         <summary>{key}</summary>
@@ -98,13 +98,13 @@
             <textarea id="{key}" use:setMDE></textarea>
         {/if}
         {#if data[key].type == 'text'}
-            <input on:change={(e) => update_data(key, 'text', e.target.value)} bind:value={data[key].content}>
+            <input on:change={(e) => update_data(key, 'text', e.target.value)} bind:value={data[key].value}>
         {/if}
         {#if data[key].type == 'number'}
-            <input on:change={(e) => update_data(key, 'number', e.target.value)} type='number' bind:value={data[key].content}>
+            <input on:change={(e) => update_data(key, 'number', e.target.value)} type='number' bind:value={data[key].value}>
         {/if}
         {#if data[key].type == 'date'}
-            <input on:change={(e) => update_data(key, 'date', e.target.value)} type='date' bind:value={data[key].content}>
+            <input on:change={(e) => update_data(key, 'date', e.target.value)} type='date' bind:value={data[key].value}>
         {/if}
         {#if (!['name', 'date'].includes(key))}
             <a href="#" on:click="{() => delete_data(key)}">Delete</a>
