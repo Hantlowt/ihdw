@@ -137,6 +137,7 @@
         <option value="number">number</option>
         <option value="date">date</option>
         <option value="markdown">markdown</option>
+        <option value="bool">boolean</option>
         <option value="relation">relation</option>
     </select>
     {#if new_content_type == "relation"}

@@ -1,4 +1,3 @@
-#from ihf import Ihf
 import hug
 from hug.types import *
 from ihdb import Ihdb
