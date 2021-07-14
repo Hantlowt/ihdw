@@ -32,7 +32,7 @@ def create_global_config():
     g['__key__'] = uuid4().hex
     g['website_name'] = 'Your WebSite'
     g['website_url'] = 'https://your-website.com'
-    g['pages'] = [{'category': 'Post', 'url': 'post/${title.lower()}', 'template':'posts.html'}]
+    g['pages'] = [{'category': 'Post', 'url': '/post/${name}', 'template':'posts.html'}]
     g['deployment_script'] = ''
     return g
 
@@ -191,14 +191,13 @@ def searchContent(category, condition):
     condition = None if len(condition) == 0 else condition
     nodes = db.nodes(category, where=condition)
     search_result = []
-    for n in nodes:
+    for n in sorted(nodes, key=lambda k: k['date']['value']):
         d = {}
         d['id'] = n.id
         d['category'] = n.category
-        d['preview_name'] = n['title'] or n['name'] if (n['title'] or n['name']) != [] else n.id
-        d['preview_name'] = d['preview_name']['value'] if 'value' in d['preview_name'] else d['preview_name']
+        d['preview_name'] = n['name']['value']
         d['preview_data'] = {i: n.data[i]['value'] for i in n.data.keys()}
-        d['preview_data'].pop('title', None)
+        d['preview_data'].pop('enabled', None)
         d['preview_data'].pop('name', None)
         d['preview_data'] = str(d['preview_data']).strip()[0:50]
         search_result += [d]
@@ -218,6 +217,7 @@ def add_content(category):
         for key in n.data.keys():
             n.data[key]['value'] = ''
             n.relations = f.relations.copy()
+    n['enabled'] = {'type': 'bool', 'value': True}
     n['name'] = {'type': 'text', 'value': 'New Content'}
     n['date'] = {'type': 'date', 'value': datetime.today().strftime('%Y-%m-%d')}
     n.save()
@@ -240,6 +240,8 @@ def getRelations(id, category):
 @hug.post(requires=token_key_authentication)
 def add_data(id, category, name, type, value):
     n = db.node(id, category)
+    if type == 'bool':
+        value = True if value == 'true' else False
     n[name] = {'type': type, 'value': value}
     return 'OK.'
 
@@ -267,7 +269,7 @@ def delete_relation(id, category, name):
 
 @hug.post(requires=token_key_authentication)
 def delete_data(id, category, name):
-    if name not in ['name', 'date']:
+    if name not in ['name', 'date', 'enabled']:
         n = db.node(id, category)
         n.data.pop(name)
         n.save()
@@ -345,7 +347,7 @@ builder = Builder(db, global_config)
 if global_config is None:
     global_config = create_global_config()
     register_superadmin()
-    a = db.create_node('Author', {'name': {'type': 'text', 'value': 'TotoPouet'}, 'date': {'type': 'date', 'value': '2020-10-19'}, 'description': {'type': 'text', 'value': 'Is a stupid writer.'}})
-    b = db.create_node('Author', {'name': {'type': 'text', 'value': 'anotherauthor'}, 'date': {'type': 'date', 'value': '2020-10-19'}, 'description': {'type': 'text', 'value': 'Is a anoymous.'}})
-    p = db.create_node('Post', {'name': {'type': 'text', 'value': 'Test'}, 'date': {'type': 'date', 'value': '2020-10-19'}, 'content':{'type': 'markdown', 'value': 'Test **lol**'}})
+    a = db.create_node('Author', {'enabled': {'type': 'bool', 'value': True}, 'name': {'type': 'text', 'value': 'TotoPouet'}, 'date': {'type': 'date', 'value': '2020-10-19'}, 'description': {'type': 'text', 'value': 'Is a stupid writer.'}})
+    b = db.create_node('Author', {'enabled': {'type': 'bool', 'value': True}, 'name': {'type': 'text', 'value': 'anotherauthor'}, 'date': {'type': 'date', 'value': '2020-10-19'}, 'description': {'type': 'text', 'value': 'Is a anoymous.'}})
+    p = db.create_node('Post', {'enabled': {'type': 'bool', 'value': True}, 'name': {'type': 'text', 'value': 'Test'}, 'date': {'type': 'date', 'value': '2020-10-19'}, 'content':{'type': 'markdown', 'value': 'Test **lol**'}})
     p['author'] = b

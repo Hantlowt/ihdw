@@ -10,9 +10,6 @@ class Builder:
     def __init__(self, db, global_config):
         self.db = db
         self.global_config = global_config
-        self.load_templates()
-        if not os.path.exists('templates'):
-            shutil.copytree(os.path.dirname(os.path.realpath(__file__))+'/templates', 'templates')
     def load_templates(self):
         self.templates = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser("templates")) for f in fn]
     def content_to_dict(self, content, rel=True):
@@ -28,6 +25,7 @@ class Builder:
         return Template(page[0]['url']).render(**self.content_to_dict(content))
     def generate_file(self, content, page):
         url = Template(page['url']).render(**self.content_to_dict(content))
+        url = url.replace(' ', '-').lower()
         with open('templates/'+page['template']) as f:
             template = Template(f.read())
         try:
@@ -39,6 +37,9 @@ class Builder:
         with open(filename, "w") as f:
             f.write(generated)
     def generate_website(self):
+        self.load_templates()
+        if not os.path.exists('templates'):
+            shutil.copytree(os.path.dirname(os.path.realpath(__file__))+'/templates', 'templates')
         if os.path.exists('build'):
             shutil.rmtree('build', ignore_errors=True)
         os.mkdir('build')
@@ -46,7 +47,8 @@ class Builder:
             shutil.copytree('templates/static', 'build/static')
         for page in self.global_config['pages']:
             for content in self.db.nodes(page['category']):
-                self.generate_file(content, page)
+                if content['enabled']['value']:
+                    self.generate_file(content, page)
 
 """
 @singleton

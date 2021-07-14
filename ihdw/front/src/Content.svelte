@@ -90,7 +90,7 @@
 
 <aside class="content">
 {#if data && relations && searchResults}
-<nav><h3>{data['name'].value} </h3> <a href="#" on:click={() => dispatch('close')}> x</a></nav>
+<nav><h3>{data['name'].value} </h3> <h4>({category})</h4> <a href="#" on:click={() => dispatch('close')}> x</a></nav>
     {#each Object.keys(data) as key}
     <details>
         <summary>{key}</summary>
@@ -106,7 +106,10 @@
         {#if data[key].type == 'date'}
             <input on:change={(e) => update_data(key, 'date', e.target.value)} type='date' bind:value={data[key].value}>
         {/if}
-        {#if (!['name', 'date'].includes(key))}
+        {#if data[key].type == 'bool'}
+        <input on:change={(e) => update_data(key, 'bool', e.target.checked)} type='checkbox' bind:checked={data[key].value}>
+        {/if}
+        {#if (!['name', 'date', 'enabled'].includes(key))}
             <a href="#" on:click="{() => delete_data(key)}">Delete</a>
         {/if}
     </details>
