@@ -84,7 +84,7 @@ def register(name, password):
 
 @hug.get()
 def build():
-    builder.generate_website()
+    builder = Builder(db, global_config)
     try:
         builder.generate_website()
         return "Successfully built"
@@ -342,7 +342,6 @@ def debug(response):
 
 db = Ihdb('db')
 global_config = db.node('Global_Config', 'Global_Config')
-builder = Builder(db, global_config)
 if global_config is None:
     global_config = create_global_config()
     register_superadmin()
