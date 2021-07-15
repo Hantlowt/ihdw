@@ -1,6 +1,7 @@
 import os
 from singleton_decorator import singleton
 from mako.template import Template
+from mako.lookup import TemplateLookup
 from mako import exceptions
 import shutil
 from markdown import markdown
@@ -27,7 +28,7 @@ class Builder:
         url = Template(page['url']).render(**self.content_to_dict(content))
         url = url.replace(' ', '-').lower()
         with open('templates/'+page['template']) as f:
-            template = Template(f.read())
+            template = Template(f.read(), lookup=TemplateLookup(directories=['templates']))
         try:
             generated = template.render(db=self.db, global_config=self.global_config, content_to_dict=self.content_to_dict ,getURL=self.getURL, markdown=markdown, current=content, **self.content_to_dict(content))
         except:
