@@ -51,8 +51,7 @@ def hash_password(password):
 def token_verify(token):
     global secret_key
     try:
-        print(dict(token))
-        return token#jwt.decode(token, secret_key, algorithm="HS256")
+        return eval(token)#jwt.decode(token, secret_key, algorithm="HS256")
     except:
         return False
 
@@ -79,9 +78,9 @@ def login(name, password):
     password_hash = hash_password(password)
     try:
         account = [a for a in db.nodes('Account') if a['name'] == name and a['__password__'] == password_hash][0]
-        return {
+        return str({
             "token": {"id": account.id, "isSuperAdmin": account["isSuperAdmin"]}
-        }
+        })
     except Exception as e:
         return error("Incorrect name or password")
 
