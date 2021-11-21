@@ -51,6 +51,7 @@ def hash_password(password):
 def token_verify(token):
     global secret_key
     try:
+        print(token)
         return eval(token)#jwt.decode(token, secret_key, algorithm="HS256")
     except:
         return False
