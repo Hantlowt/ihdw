@@ -6,10 +6,20 @@ from uuid import uuid4
 import time
 import os
 from builder import Builder
-import jwt
 from hug.middleware import CORSMiddleware
 import secrets
 from datetime import datetime
+
+def change_to_be_hex(s):
+    return hex(int(s,base=16))
+
+def change_to_be_hex(s):
+    return int(s,base=16)
+    
+def xor_two_str(str1,str2):
+    a = change_to_be_hex(str1)
+    b = change_to_be_hex(str2)
+    return hex(a ^ b)
 
 api = hug.API(__name__)
 api.http.add_middleware(CORSMiddleware(api))
@@ -41,8 +51,8 @@ def hash_password(password):
 def token_verify(token):
     global secret_key
     try:
-        return jwt.decode(token, secret_key, algorithm="HS256")
-    except jwt.DecodeError:
+        return eval(token)#jwt.decode(token, secret_key, algorithm="HS256")
+    except:
         return False
 
 token_key_authentication = hug.authentication.token(token_verify)
@@ -69,7 +79,7 @@ def login(name, password):
     try:
         account = [a for a in db.nodes('Account') if a['name'] == name and a['__password__'] == password_hash][0]
         return {
-            "token": jwt.encode({"id": account.id, "isSuperAdmin": account["isSuperAdmin"]}, secret_key, algorithm="HS256")
+            "token": {"id": account.id, "isSuperAdmin": account["isSuperAdmin"]}
         }
     except Exception as e:
         return error("Incorrect name or password")
